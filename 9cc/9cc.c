@@ -106,18 +106,20 @@ Token *tokenize() {
       continue;
     }
 
+    // Punctuator
     if (*p == '+' || *p == '-') {
       cur = new_token(TK_RESERVED, cur, p++);
       continue;
     }
 
+    // Integer literal
     if (isdigit(*p)) {
       cur = new_token(TK_NUM, cur, p);
       cur->val = strtol(p, &p, 10);
       continue;
     }
 
-    error_at(token->str, "トークナイズできません");
+    error_at(p, "トークナイズできません");
   }
 
   new_token(TK_EOF, cur, p);
@@ -126,7 +128,7 @@ Token *tokenize() {
 
 int main(int argc, char **argv) {
   if (argc != 2) {
-    error_at(token->str, "引数の個数が正しくありません");
+    error("%s: 引数の個数が正しくありません", argv[0]);
     return 1;
   }
 
@@ -136,7 +138,7 @@ int main(int argc, char **argv) {
 
   // アセンブリの前半部分を出力
   printf(".intel_syntax noprefix\n");
-  printf(".globl main\n");
+  printf(".global main\n");
   printf("main:\n");
 
   // 式の最初は数でなければならないので、それをチェックして
